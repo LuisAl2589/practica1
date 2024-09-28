@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerradura Kleene</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f0fdf4; /* Verde suave */
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-custom {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #218838;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-custom">
+                    <div class="card-header bg-success text-white text-center">
+                        <h3>Bienvenido a la Cerradura Kleene</h3>
+                        <p>Utiliza esta herramienta para encontrar la cerradura de Kleene de un número dado.</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="cerraduraForm">
+                            <div class="form-group">
+                                <label for="inputNumber" class="font-weight-bold">Introduce un número:</label>
+                                <input type="number" class="form-control" id="inputNumber" name="inputNumber"
+                                    placeholder="Escribe un número" required>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="button" class="btn btn-custom mx-2" id="kleeneButton">Cerradura de
+                                    Kleene</button>
+                                <button type="button" class="btn btn-secondary mx-2" id="kleenePositivaButton">Cerradura
+                                    de Kleene Positiva</button>
+                            </div>
+                        </form>
+
+                        <div id="result" class="result-box" style="display: none;">
+                            <h5>Resultado:</h5>
+                            <p id="resultText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function makeRequest(url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const resultBox = document.getElementById('result');
+                    const resultText = document.getElementById('resultText');
+
+                    if (data['Σ^*']) {
+                        resultText.textContent = data['Σ^*'];
+                    } else if (data['Σ^+']) {
+                        resultText.textContent = data['Σ^+'];
+                    } else if (data.error) {
+                        resultText.textContent = data.error;
+                    }
+                    resultBox.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const resultText = document.getElementById('resultText');
+                    resultText.textContent = 'Ocurrió un error.';
+                });
+        }
+
+        document.getElementById('kleeneButton').addEventListener('click', function () {
+            const number = document.getElementById('inputNumber').value;
+            if (number >= 0) {
+                makeRequest('/cerradura/kleene/' + number);
+            } else {
+                document.getElementById('resultText').textContent = 'El número no puede ser negativo.';
+                document.getElementById('result').style.display = 'block';
+            }
+        });
+
+        document.getElementById('kleenePositivaButton').addEventListener('click', function () {
+            const number = document.getElementById('inputNumber').value;
+            if (number >= 0) {
+                makeRequest('/cerradura/positiva/' + number);
+            } else {
+                document.getElementById('resultText').textContent = 'El número no puede ser negativo.';
+                document.getElementById('result').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>
