@@ -1,4 +1,4 @@
-# Mi API Rest
+# Mi API Rest Cerradura Kleene
 
 Este proyecto es una API Rest básica creada con **Spring Boot** utilizando **Java** y **Maven** como herramientas principales de desarrollo. 
 La aplicación permite obtener la cerradura de Kleene y la cerradura positiva de Kleene de un alfabeto binario.
